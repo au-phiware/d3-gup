@@ -1,3 +1,5 @@
+import { selection } from 'd3-selection';
+
 export function empty() {}
 
 export default function gup() {
@@ -6,16 +8,16 @@ export default function gup() {
     , enter = null
     , post = null
   ;
-  function gup(data, _) {
-    if (arguments.length > 1) {
-      return gup.call(this, _)(data);
+  function gup(data, ...more) {
+    if (data instanceof selection) {
+      return gup.apply(this, more)(data);
     }
     return function(...args) {
       let context = args.shift();
       let shouldTransition = !!context.selection;
       let selection = shouldTransition ? context.selection() : context;
 
-      let $pre = selection.data(data);
+      let $pre = selection.data(data, more[0]);
       if (pre && pre != empty) {
         let preT = $pre
         if (shouldTransition && $pre.transition) {
