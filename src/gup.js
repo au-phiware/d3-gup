@@ -10,7 +10,8 @@ export default function gup() {
     if (arguments.length > 1) {
       return gup.call(this, _)(data);
     }
-    return function(context) {
+    return function(...args) {
+      let context = args.shift();
       let shouldTransition = !!context.selection;
       let selection = shouldTransition ? context.selection() : context;
 
@@ -20,7 +21,7 @@ export default function gup() {
         if (shouldTransition && $pre.transition) {
           preT = $pre.transition(context);
         }
-        preT.call(pre);
+        preT.call(pre, ...args);
       }
 
       if (exit && exit != empty) {
@@ -28,12 +29,12 @@ export default function gup() {
         if (shouldTransition && $exit.transition) {
           $exit = $exit.transition(context);
         }
-        $exit.call(exit);
+        $exit.call(exit, ...args);
       }
 
       let $enter = $pre.enter();
       if (enter && enter != empty) {
-        $enter = enter.call(this, $enter);
+        $enter = enter.call(this, $enter, ...args);
       }
 
       if (post && post != empty) {
@@ -41,7 +42,7 @@ export default function gup() {
         if (shouldTransition && $post.transition) {
           $post = $post.transition(context);
         }
-        $post.call(post);
+        $post.call(post, ...args);
       }
     }
   }
@@ -64,7 +65,12 @@ export default function gup() {
 
   gup.update = function(...args) {
     switch (arguments.length) {
-      case 0: return [pre || empty, exit || empty, enter || empty, post || empty];
+      case 0: return [
+        pre || empty,
+        exit || empty,
+        enter || empty,
+        post || empty
+      ];
       case 1:
         [pre] = args;
         break;

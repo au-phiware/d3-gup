@@ -7,6 +7,10 @@ export default {
   moduleName: 'd3',
   name: 'd3',
   plugins: [
-    buble()
+    buble({
+      transforms: {
+        dangerousForOf: true
+      }
+    })
   ]
 };
