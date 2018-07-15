@@ -1,5 +1,3 @@
-import { selection } from 'd3-selection';
-
 export function empty() {}
 
 export default function gup() {
@@ -9,7 +7,8 @@ export default function gup() {
     , post = null
   ;
   function gup(data, ...more) {
-    if (data instanceof selection) {
+    if (data.constructor.toString().substr(9,10) === "Selection(" ||
+      data.constructor.toString().substr(9,11) === "Transition(") {
       return gup.apply(this, more)(data);
     }
     return function(...args) {
