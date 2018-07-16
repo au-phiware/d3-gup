@@ -57,19 +57,19 @@ export default function gup() {
   }
 
   gup.pre = function(_) {
-    return arguments.length ? (pre = _, gup) : (pre || empty);
+    return arguments.length ? (pre = _, this) : (pre || empty);
   }
 
   gup.exit = function(_) {
-    return arguments.length ? (exit = _, gup) : (exit || empty);
+    return arguments.length ? (exit = _, this) : (exit || empty);
   }
 
   gup.enter = function(_) {
-    return arguments.length ? (enter = _, gup) : (enter || empty);
+    return arguments.length ? (enter = _, this) : (enter || empty);
   }
 
   gup.post = function(_) {
-    return arguments.length ? (post = _, gup) : (post || empty);
+    return arguments.length ? (post = _, this) : (post || empty);
   }
 
   gup.update = function(...args) {
@@ -92,7 +92,7 @@ export default function gup() {
       default:
         [pre, exit, enter, post] = args;
     }
-    return gup;
+    return this;
   }
 
   return gup;
