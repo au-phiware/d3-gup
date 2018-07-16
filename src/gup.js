@@ -13,7 +13,7 @@ export default function gup() {
     if (data instanceof selection || data instanceof transition) {
       return gup.apply(this, more)(data);
     }
-    return function(...args) {
+    function _gup(...args) {
       let context = args.shift();
       let shouldTransition = !!context.selection;
       let selection = shouldTransition ? context.selection() : context;
@@ -48,6 +48,12 @@ export default function gup() {
         $post.call(post, ...args);
       }
     }
+
+    _gup.data = function(..._) {
+      return arguments.length ? ([data, ...more] = _, this) : [data, ...more];
+    }
+
+    return _gup;
   }
 
   gup.pre = function(_) {
