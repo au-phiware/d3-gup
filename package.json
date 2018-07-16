@@ -25,7 +25,9 @@
     "clean": "rm -rf build && mkdir build",
     "pretest": "npm run clean && rollup -c",
     "test": "tape 'test/**/*-test.js'",
-    "prepublish": "npm test && uglifyjs build/d3-gup.js -c -m -o build/d3-gup.min.js",
+    "preversion": "npm test",
+    "postversion": "npm publish",
+    "prepublish": "uglifyjs build/d3-gup.js -c -m -o build/d3-gup.min.js",
     "postpublish": "git push && git push --tags"
   },
   "dependencies": {
