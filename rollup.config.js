@@ -7,7 +7,8 @@ export default {
     format: 'umd',
     name: 'd3',
     globals: {
-      "d3-selection": "d3"
+      "d3-selection": "d3",
+      "d3-transition": "d3",
     },
   },
   plugins: [
