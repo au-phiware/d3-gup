@@ -7,7 +7,7 @@ function comp(fns, name) {
   let f = function(...args) {
     for (let f of fns) {
       if (name in f && f[name]) {
-        let result = f[name].apply(this, args);
+        var result = f[name].apply(this, args);
         if (forward) args[0] = result;
       }
     }
