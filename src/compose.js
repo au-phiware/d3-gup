@@ -6,8 +6,8 @@ function comp(fns, name) {
   let forward = name === "enter";
   let f = function(...args) {
     for (let f of fns) {
-      if (name in f && f[name]) {
-        var result = f[name].apply(this, args);
+      if (name in f && f[name] && (f = f[name]())) {
+        var result = f.apply(this, args);
         if (forward) args[0] = result;
       }
     }
