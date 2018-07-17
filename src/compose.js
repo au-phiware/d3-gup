@@ -3,8 +3,6 @@ import gup from './gup';
 const nonEnumerableProps = /^(valueOf|isPrototypeOf|to(Locale)?String|propertyIsEnumerable|hasOwnProperty|pre|exit|enter|post|update)$/;
 
 function comp(fns, name) {
-  fns = fns.reverse();
-
   let forward = name === "enter";
   let f = function(...args) {
     for (let f of fns) {
