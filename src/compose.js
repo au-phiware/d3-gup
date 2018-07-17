@@ -1,6 +1,6 @@
 import gup from './gup';
 
-const nonEnumerableProps = /^(valueOf|isPrototypeOf|to(Locale)?String|propertyIsEnumerable|hasOwnProperty)$/;
+const nonEnumerableProps = /^(valueOf|isPrototypeOf|to(Locale)?String|propertyIsEnumerable|hasOwnProperty|pre|exit|enter|post|update)$/;
 
 function comp(fns, name) {
   fns = fns.reverse();
