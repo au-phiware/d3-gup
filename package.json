@@ -1,6 +1,6 @@
 {
   "name": "d3-gup",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "A small utility function that encapsulates the D3 General Update Pattern.",
   "main": "build/d3-gup.js",
   "module": "index",
