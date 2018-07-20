@@ -40,13 +40,15 @@ export default function gup() {
         $enter = enter.call(this, $enter, ...args);
       }
 
+      let $post = $enter.merge($pre)
       if (post && post != empty) {
-        let $post = $enter.merge($pre)
         if (shouldTransition && $post.transition) {
           $post = $post.transition(context);
         }
         $post.call(post, ...args);
       }
+
+      return $post;
     }
 
     _gup.data = function(..._) {
