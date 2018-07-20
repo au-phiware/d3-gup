@@ -2,12 +2,14 @@ import { selection } from 'd3-selection';
 import { transition } from 'd3-transition';
 
 export function empty() {}
+export function identity($) { return $; }
 
 export default function gup() {
   let pre = null
     , exit = null
     , enter = null
     , post = null
+    , select = null
   ;
   function gup(data, ...more) {
     if (data instanceof selection || data instanceof transition) {
@@ -17,6 +19,9 @@ export default function gup() {
       let context = args.shift();
       let shouldTransition = !!context.selection;
       let selection = shouldTransition ? context.selection() : context;
+      if (select && select != identity) {
+        selection = select.call(this, selection, ...args);
+      }
 
       let $pre = selection.data(data, more[0]);
       if (pre && pre != empty) {
@@ -36,7 +41,7 @@ export default function gup() {
       }
 
       let $enter = $pre.enter();
-      if (enter && enter != empty) {
+      if (enter && enter != identity) {
         $enter = enter.call(this, $enter, ...args);
       }
 
@@ -58,6 +63,10 @@ export default function gup() {
     return _gup;
   }
 
+  gup.select = function(_) {
+    return arguments.length ? (select = _, this) : (select || identity);
+  }
+
   gup.pre = function(_) {
     return arguments.length ? (pre = _, this) : (pre || empty);
   }
@@ -67,7 +76,7 @@ export default function gup() {
   }
 
   gup.enter = function(_) {
-    return arguments.length ? (enter = _, this) : (enter || empty);
+    return arguments.length ? (enter = _, this) : (enter || identity);
   }
 
   gup.post = function(_) {
@@ -79,7 +88,7 @@ export default function gup() {
       case 0: return [
         pre || empty,
         exit || empty,
-        enter || empty,
+        enter || identity,
         post || empty
       ];
       case 1:
