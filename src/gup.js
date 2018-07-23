@@ -21,6 +21,11 @@ export default function gup() {
       let selection = shouldTransition ? context.selection() : context;
       if (select && select != identity) {
         selection = select.call(this, selection, ...args);
+        if (selection.selection) {
+          shouldTransition = true;
+          context = selection;
+          selection = selection.selection();
+        }
       }
 
       let $pre = selection.data(data, more[0]);
@@ -43,6 +48,11 @@ export default function gup() {
       let $enter = $pre.enter();
       if (enter && enter != identity) {
         $enter = enter.call(this, $enter, ...args);
+        if ($enter.selection) {
+          shouldTransition = true;
+          context = $enter;
+          $enter = $enter.selection();
+        }
       }
 
       let $post = $enter.merge($pre)
