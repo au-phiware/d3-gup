@@ -1,6 +1,3 @@
-import { selection } from 'd3-selection';
-import { transition } from 'd3-transition';
-
 export function empty() {}
 export function identity($) { return $; }
 
@@ -12,9 +9,6 @@ export default function gup() {
     , select = null
   ;
   function gup(data, ...more) {
-    if (data instanceof selection || data instanceof transition) {
-      return gup.apply(this, more)(data);
-    }
     function _gup(...args) {
       let context = args.shift();
       let shouldTransition = !!context.selection;
