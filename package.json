@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/au-phiware/d3-gup#readme",
   "scripts": {
+    "docco": "docco src/*.js",
     "clean": "rm -rf build && mkdir build",
     "pretest": "npm run clean && rollup -c",
     "test": "tape 'test/**/*-test.js'",
@@ -35,6 +36,7 @@
     "d3-transition": ">=0.0.6"
   },
   "devDependencies": {
+    "docco": "^0.8.0",
     "rollup": "^0.62.0",
     "rollup-plugin-buble": "^0.19.2",
     "tape": "^4.9.1",
