@@ -20,7 +20,7 @@
   "bugs": {
     "url": "https://github.com/au-phiware/d3-gup/issues"
   },
-  "homepage": "https://github.com/au-phiware/d3-gup#readme",
+  "homepage": "https://au-phiware.github.io/d3-gup/",
   "scripts": {
     "docco": "docco --output . src/*.js",
     "clean": "rm -rf build && mkdir build",
