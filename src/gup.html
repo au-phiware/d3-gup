@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>Introduction</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="../docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page_wrapper">
+            <div id="jump_page">
+              
+                
+                <a class="source" href="compose.html">
+                  src/compose.js
+                </a>
+              
+                
+                <a class="source" href="gup.html">
+                  src/gup.js
+                </a>
+              
+            </div>
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <h1 id="introduction">Introduction</h1>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>The aim of d3-gup is to codify the <a href="https://bl.ocks.org/mbostock/3808218" title="General Update Pattern, I">General Update Pattern</a> as
+described by <a href="https://github.com/d3/d3-selection#selection_data" title="Selection#data (d3-selection)">Selection#data</a>.  In doing so, we create a
+callable D3 <a href="https://github.com/d3/d3/wiki/Plugins" title="Plugins">plugin</a> that is intended to extend D3 rather than
+wrap or conceal its features.  This plugin is designed to be composable with
+other D3 plugins and <a href="compose.html" title="compose.js">itself</a>.</p>
+<p>Firstly, a quick recap of the General Update Pattern (GUP).  GUP describes
+the order of operations that conventional follows a <a href="https://bost.ocks.org/mike/join/" title="Thinking with Joins">data-join</a>.
+Once a selection is made against the DOM the first phase of updates is
+conducted upon the selected elements that are pre-existing and will remain in
+the DOM.  The second phase of updates are applied to exit selection, i.e.
+those elements that are pre-existing in the DOM but will no longer be bound
+to data.  The third phase creates and binds elements for the enter selection,
+i.e. those elements that don’t yet exist but will be bound to data.  The
+fourth and final phase provides an opportunity to update the final selection
+that is bound to the data, i.e. the merged selections of enter and
+pre-existing elements.</p>
+<p>The plugin exports a factory that encapsulates these four update phases, we
+also recognise an initial phase (phase zero) that allows a plugin user to
+modify the selection before the data-join occurs.  This initial phase is
+important since a GUP factory is independent of a particular data array but
+often dependent on the shape of the data, e.g. flat vs. heirarchical.  Being
+albe to hook in before the data-join allow GUP authors to dictate the shape
+of the selection.</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p><code>gup</code> creates a factory of GUP instances that, when bound to a data array,
+can be called on a selection.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">gup</span>(<span class="hljs-params"></span>) </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>Internally, <code>null</code> represents an no-op for any phase.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">let</span> pre = <span class="hljs-literal">null</span>
+    , exit = <span class="hljs-literal">null</span>
+    , enter = <span class="hljs-literal">null</span>
+    , post = <span class="hljs-literal">null</span>
+    , select = <span class="hljs-literal">null</span>
+  ;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>The factory accepts the same arguments as <a href="https://github.com/d3/d3-selection#selection_data" title="Selection#data (d3-selection)">Selection#data</a>
+but the data-join is deferred until it is called against a selection.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">gup</span>(<span class="hljs-params">data, ...more</span>) </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>A GUP instance, bound to <code>data</code>, executes the five phases when called on
+a selection.  In other words, the returned function from a GUP factory is
+designed to be passed to the <a href="https://github.com/d3/d3-selection#selection_call" title="Selection#call (d3-selection)"><code>call</code></a> function of a
+selection.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">_gup</span>(<span class="hljs-params">...args</span>) </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>The first argument is expected to be a <a href="https://github.com/d3/d3-selection#selection" title="Selection (d3-selection)">Selection</a> or a
+<a href="https://github.com/d3/d3-transition#transition" title="Transition (d3-transition)">Transition</a> instance.  The remaining arguments are the
+optional arguments passed to the <a href="https://github.com/d3/d3-selection#selection_call" title="Selection#call (d3-selection)"><code>call</code></a> call, which
+are passed through to each of the five phase functions.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">let</span> context = args.shift();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>We have made a conscious to not depend directly on <code>d3-selection</code> or
+<code>d3-transition</code> for a variety of reasons.  Instead, we consider any
+object that has a <code>selection</code> method to be a <a href="https://github.com/d3/d3-transition#transition" title="Transition (d3-transition)"><code>Transition</code></a>
+instance.  The only requirements on this transition-like instance is
+that this selection method returns a <a href="https://github.com/d3/d3-selection#selection" title="Selection (d3-selection)"><code>Selection</code></a> instance
+and the object is accepted by the <a href="https://github.com/d3/d3-transition#selection_transition" title="Selection#transition (d3-transition)"><code>transition</code></a>
+method of a <code>Selection</code> instance.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">let</span> shouldTransition = !!context.selection;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p><code>selection</code> will not be a <a href="https://github.com/d3/d3-transition#transition" title="Transition (d3-transition)"><code>Transition</code></a> instance, instead
+it will be a real <a href="https://github.com/d3/d3-selection#selection" title="Selection (d3-selection)"><code>Selection</code></a> instance.  This is necessary
+because we cannot call <a href="https://github.com/d3/d3-selection#selection_data" title="Selection#data (d3-selection)"><code>data</code></a> on a transition.
+Beyond this point, <code>context</code> is assumed to be a <code>Transition</code> instance.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">let</span> selection = shouldTransition ? context.selection() : context;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>Phase 0: <code>selection</code> can potentially be transformed by the <code>select</code>
+function.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">if</span> (select &amp;&amp; select != identity) {
+        selection = select.call(<span class="hljs-keyword">this</span>, selection, ...args);
+        <span class="hljs-keyword">if</span> (selection.selection) {
+          shouldTransition = <span class="hljs-literal">true</span>;
+          context = selection;
+          selection = selection.selection();
+        }
+      }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>The data-join!
+Here we now pass the data and an optional key function that was passed
+to the GUP factory (that made this GUP instance).</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      selection = selection.data(data, more[<span class="hljs-number">0</span>]);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>Phase 1: the <code>pre</code> function is applied to the pre-existing elements
+with bound data.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">if</span> (pre &amp;&amp; pre != empty) {
+        <span class="hljs-keyword">let</span> $pre = selection</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>If this GUP instance was applied to a transition then we forward the
+transition to the <code>pre</code> function.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">if</span> (shouldTransition &amp;&amp; selection.transition) {
+          $pre = selection.transition(context);
+        }
+        $pre.call(pre, ...args);
+      }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>Phase 2: almost identical to phase 1, except we make a call to
+<a href="https://github.com/d3/d3-selection#selection_exit" title="Selection#exit (d3-selection)"><code>exit</code></a>.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">if</span> (exit &amp;&amp; exit != empty) {
+        <span class="hljs-keyword">let</span> $exit = selection.exit();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <p>Again, the same transition is forwarded to the <code>exit</code> function.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">if</span> (shouldTransition &amp;&amp; $exit.transition) {
+          $exit = $exit.transition(context);
+        }
+        $exit.call(exit, ...args);
+      }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <p>Phase 3: unique among the update phases, like the <code>select</code> function,
+<code>enter</code> has the opportunity to transform the selection.  The return
+value of the <code>enter</code> function is immediately <a href="https://github.com/d3/d3-selection#selection_merge" title="Selection#merge (d3-selection)">merged</a>
+with the data-join selection which is subsequently returned by this
+GUP.  Furthermore, the transition is not forwarded to the <code>enter</code>
+function because its work is typically to create the elements, meaning
+that there is no prior state to transition to (the transition should
+occur during the next phase).</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">let</span> $enter = selection.enter();
+      <span class="hljs-keyword">if</span> (enter &amp;&amp; enter != identity) {
+        $enter = enter.call(<span class="hljs-keyword">this</span>, $enter, ...args);
+        <span class="hljs-keyword">if</span> ($enter.selection) {
+          shouldTransition = <span class="hljs-literal">true</span>;
+          context = $enter;
+          $enter = $enter.selection();
+        }
+      }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <p>Phase 4: the <code>post</code> function is applied to the final set of elements
+bound to the data.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">let</span> $post = $enter.merge(selection)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-18">&#182;</a>
+              </div>
+              <p>The third and final time that the transition is forwarded.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">if</span> (shouldTransition &amp;&amp; $post.transition) {
+        $post = $post.transition(context);
+      }
+      <span class="hljs-keyword">if</span> (post &amp;&amp; post != empty) {
+        $post.call(post, ...args);
+      }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-19">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-19">&#182;</a>
+              </div>
+              <p>The returned selection or potentially a transition is (as mentioned
+above) the update selection from the data-join merged into the return
+value of the <code>enter</code> function, which, by default, will be the newly
+created elements.  Therefore this selection/transition should be all
+the elements bound to the data.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">return</span> $post;
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-20">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-20">&#182;</a>
+              </div>
+              <p><code>data</code> sets the data array and optionally the key function and returns
+the GUP instance.  If no arguments are specified, returns the current
+data array and key function in an array.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    _gup.data = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">..._</span>) </span>{
+      <span class="hljs-keyword">return</span> <span class="hljs-built_in">arguments</span>.length ? ([data, ...more] = _, <span class="hljs-keyword">this</span>) : [data, ...more];
+    }
+
+    <span class="hljs-keyword">return</span> _gup;
+  }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-21">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-21">&#182;</a>
+              </div>
+              <p><code>select</code> sets the initial phase to the specified function, passing <code>null</code>
+resets the phase to its default (identity function), and returns the GUP
+factory.  If no arguments are specified, returns the current <code>select</code>
+function, which is guaranteed to be a function.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  gup.select = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">_</span>) </span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">arguments</span>.length ? (select = _, <span class="hljs-keyword">this</span>) : (select || identity);
+  }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-22">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-22">&#182;</a>
+              </div>
+              <p><code>pre</code> sets the first phase to the specified function, passing <code>null</code> resets
+the phase to its default (empty function), and returns the GUP factory.  If
+no arguments are specified, returns the current <code>pre</code> function, which is
+guaranteed to be a function.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  gup.pre = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">_</span>) </span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">arguments</span>.length ? (pre = _, <span class="hljs-keyword">this</span>) : (pre || empty);
+  }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-23">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-23">&#182;</a>
+              </div>
+              <p><code>exit</code> sets the second phase to the specified function, passing <code>null</code>
+resets the phase to its default (empty function), and returns the GUP
+factory.  If no arguments are specified, returns the current <code>exit</code>
+function, which is guaranteed to be a function.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  gup.exit = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">_</span>) </span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">arguments</span>.length ? (exit = _, <span class="hljs-keyword">this</span>) : (exit || empty);
+  }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-24">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-24">&#182;</a>
+              </div>
+              <p><code>enter</code> sets the third phase to the specified function, passing <code>null</code>
+resets the phase to its default (identity function), and returns the GUP
+factory.  If no arguments are specified, returns the current <code>enter</code>
+function, which is guaranteed to be a function.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  gup.enter = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">_</span>) </span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">arguments</span>.length ? (enter = _, <span class="hljs-keyword">this</span>) : (enter || identity);
+  }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-25">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-25">&#182;</a>
+              </div>
+              <p><code>post</code> sets the fourth phase to the specified function, passing <code>null</code>
+resets the phase to its default (empty function), and returns the GUP
+factory.  If no arguments are specified, returns the current <code>post</code>
+function, which is guaranteed to be a function.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  gup.post = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">_</span>) </span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">arguments</span>.length ? (post = _, <span class="hljs-keyword">this</span>) : (post || empty);
+  }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-26">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-26">&#182;</a>
+              </div>
+              <p><code>update</code> is a shorthand for setting the four update phase functions, <code>pre</code>,
+<code>exit</code>, <code>enter</code> and <code>post</code> in that sequence.  If no functions are specified
+then the four functions are returned in an array in the aforementioned
+order.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  gup.update = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">...args</span>) </span>{
+    <span class="hljs-keyword">switch</span> (<span class="hljs-built_in">arguments</span>.length) {
+      <span class="hljs-keyword">case</span> <span class="hljs-number">0</span>: <span class="hljs-keyword">return</span> [
+        pre || empty,
+        exit || empty,
+        enter || identity,
+        post || empty
+      ];
+      <span class="hljs-keyword">case</span> <span class="hljs-number">1</span>:
+        [pre] = args;
+        <span class="hljs-keyword">break</span>;
+      <span class="hljs-keyword">case</span> <span class="hljs-number">2</span>:
+        [pre, exit] = args;
+        <span class="hljs-keyword">break</span>;
+      <span class="hljs-keyword">case</span> <span class="hljs-number">3</span>:
+        [pre, exit, enter] = args;
+        <span class="hljs-keyword">break</span>;
+      <span class="hljs-keyword">default</span>:
+        [pre, exit, enter, post] = args;
+    }
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+  }
+
+  <span class="hljs-keyword">return</span> gup;
+}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-27">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-27">&#182;</a>
+              </div>
+              <p><code>empty</code> is checked and considered an no-op for the <code>pre</code>, <code>exit</code> and <code>post</code>
+functions.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">export</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">empty</span>(<span class="hljs-params"></span>) </span>{}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-28">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-28">&#182;</a>
+              </div>
+              <p><code>identity</code> is checked and considered an no-op for the <code>select</code> and <code>enter</code>
+functions.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">export</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">identity</span>(<span class="hljs-params">$</span>) </span>{ <span class="hljs-keyword">return</span> $; }</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>Introduction</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="../docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page_wrapper">
+            <div id="jump_page">
+              
+                
+                <a class="source" href="compose.html">
+                  src/compose.js
+                </a>
+              
+                
+                <a class="source" href="gup.html">
+                  src/gup.js
+                </a>
+              
+            </div>
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">import</span> {<span class="hljs-keyword">default</span> <span class="hljs-keyword">as</span> gup, empty, identity} <span class="hljs-keyword">from</span> <span class="hljs-string">'./gup'</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <h1 id="introduction">Introduction</h1>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>One of the key ideas of d3-gup is that <a href="gup.html" title="gup.js">GUP factories</a> can be composed,
+whereby the functions of each phase are composed together to form a single
+GUP factory that can then be bound to data and called against a selection.
+Not only do we compose the phase functions together but we also merge the
+remaining properties of the GUP factories in the hope that they don’t
+conflict with each other and the resulting GUP factory can be used as if it
+was any one of its component GUP factories.</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>These properties are not to be touched during the merge.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">const</span> nonEnumerableProps = <span class="hljs-regexp">/^(valueOf|isPrototypeOf|to(Locale)?String|propertyIsEnumerable|hasOwnProperty|pre|exit|enter|post|update|select)$/</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p><code>comp</code> does the bulk of the work to compose gups together for a given phase.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">comp</span>(<span class="hljs-params">gups, name</span>) </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>Only <code>enter</code> and <code>select</code> functions make use of the return value.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">let</span> forward = name === <span class="hljs-string">"enter"</span> || name === <span class="hljs-string">"select"</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p><code>f</code> is the resulting function that calls each phase function in gups in
+turn.  <code>f</code> is designed to be passed to the <a href="https://github.com/d3/d3-selection#selection_call" title="Selection#call (d3-selection)"><code>call</code></a>
+function, therefore the first argument will be a Selection.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">let</span> f = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">...args</span>) </span>{
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> g <span class="hljs-keyword">of</span> gups) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>Extract the phase function from <code>g</code> and call it if it’s not a no-op</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">if</span> (name <span class="hljs-keyword">in</span> g &amp;&amp; g[name] &amp;&amp; (g = g[name]()) &amp;&amp; g !== empty &amp;&amp; g !== identity) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p><code>this</code> and args are passed through</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">var</span> result = g.apply(<span class="hljs-keyword">this</span>, args);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>The selection may have been transformed by either <code>enter</code> or
+<code>select</code>, therefore we must carry it forward as the first argument.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">if</span> (forward) args[<span class="hljs-number">0</span>] = result;
+      }
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>Only <code>enter</code> and <code>select</code> functions should return anything.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> (forward) <span class="hljs-keyword">return</span> result;
+  };
+  <span class="hljs-keyword">return</span> f;
+}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p><code>compose</code> acts like Underscore’s <a href="https://underscorejs.org/#extend" title="_.extend"><code>extend</code></a> function followed by
+Underscore’s <a href="https://underscorejs.org/#compose" title="_.compose"><code>compose</code></a> function, but returns a new GUP factory
+(none of the sources are mutated).  For the extend part the sources are read
+from left to right; properties of the rightmost source may override the
+properties of sources on the left.  For the compose part sources are read
+from right to left; the rightmost source will be the the innermost call and
+called first, passing results to the source on it left.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">compose</span>(<span class="hljs-params">...sources</span>) </span>{
+  <span class="hljs-keyword">let</span> g = gup();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>Perform the extend for each property in each source, assign it to <code>g</code>.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> source <span class="hljs-keyword">of</span> sources) {
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> k <span class="hljs-keyword">in</span> source) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>Skip the pharse functions the the non-enumerble properties of <code>Object</code>.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">if</span> (!nonEnumerableProps.test(k)) {
+        g[k] = source[k];
+      }
+    }
+  }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <p>Perform the compose for each of the five phase functions.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  sources = sources.reverse();
+  g.select(comp(sources, <span class="hljs-string">"select"</span>));
+  g.pre(comp(sources, <span class="hljs-string">"pre"</span>));
+  g.exit(comp(sources, <span class="hljs-string">"exit"</span>));
+  g.enter(comp(sources, <span class="hljs-string">"enter"</span>));
+  g.post(comp(sources, <span class="hljs-string">"post"</span>));</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <p>Returns the freshly minted GUP factory.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">return</span> g;
+}</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

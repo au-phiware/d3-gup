@@ -1,37 +1,12 @@
 {
-  "name": "d3-gup",
-  "version": "0.1.0",
-  "description": "A small utility function that encapsulates the D3 General Update Pattern.",
-  "main": "build/d3-gup.js",
-  "module": "index",
-  "jsnext:main": "index",
+  "description": "Website of d3-gup.",
+  "author": "Corin Lawson",
+  "license": "BSD-3-Clause",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/au-phiware/d3-gup.git"
   },
-  "keywords": [
-    "d3",
-    "d3-module",
-    "selection",
-    "data-join"
-  ],
-  "author": "Corin Lawson",
-  "license": "BSD-3-Clause",
-  "bugs": {
-    "url": "https://github.com/au-phiware/d3-gup/issues"
-  },
-  "homepage": "https://github.com/au-phiware/d3-gup#readme",
-  "scripts": {
-    "clean": "rm -rf build && mkdir build",
-    "pretest": "npm run clean && rollup -c",
-    "test": "tape 'test/**/*-test.js'",
-    "prepublish": "npm test && uglifyjs build/d3-gup.js -c -m -o build/d3-gup.min.js",
-    "postpublish": "git push && git push --tags"
-  },
-  "devDependencies": {
-    "rollup": "^0.62.0",
-    "rollup-plugin-buble": "^0.19.2",
-    "tape": "^4.9.1",
-    "uglify-js": "^3.4.4"
+  "dependencies": {
+    "jquery": "^3.3.1"
   }
 }
