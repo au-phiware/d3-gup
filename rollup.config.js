@@ -5,6 +5,7 @@ export default {
   output: {
     file: 'build/d3-gup.js',
     format: 'umd',
+    extend: true,
     name: 'd3',
     globals: {
       "d3-selection": "d3",

@@ -5,7 +5,7 @@
 // described by [Selection#data][selection_data].  In doing so, we create a
 // callable D3 [plugin][d3-plugin] that is intended to extend D3 rather than
 // wrap or conceal its features.  This plugin is designed to be composable with
-// other D3 plugins.
+// other D3 plugins and [itself][compose].
 //
 // Firstly, a quick recap of the General Update Pattern (GUP).  GUP describes
 // the order of operations that conventional follows a [data-join][d3-join].
@@ -30,6 +30,7 @@
 // [GUP-I]: https://bl.ocks.org/mbostock/3808218 "General Update Pattern, I"
 // [selection_data]: https://github.com/d3/d3-selection#selection_data "Selection#data (d3-selection)"
 // [d3-plugin]: https://github.com/d3/d3/wiki/Plugins "Plugins"
+// [compose]: compose.html "compose.js"
 // [d3-join]: https://bost.ocks.org/mike/join/ "Thinking with Joins"
 
 // `gup` creates a factory of GUP instances that, when bound to a data array,

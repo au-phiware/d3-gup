@@ -22,13 +22,13 @@
   },
   "homepage": "https://github.com/au-phiware/d3-gup#readme",
   "scripts": {
-    "docco": "docco src/*.js",
+    "docco": "docco --output . src/*.js",
     "clean": "rm -rf build && mkdir build",
     "pretest": "npm run clean && rollup -c",
     "test": "tape 'test/**/*-test.js'",
     "preversion": "npm test",
     "postversion": "npm publish",
-    "prepublish": "uglifyjs build/d3-gup.js -c -m -o build/d3-gup.min.js",
+    "prepublish": "npm test && uglifyjs build/d3-gup.js -c -m -o build/d3-gup.min.js",
     "postpublish": "git push && git push --tags"
   },
   "peerDependencies": {
@@ -37,7 +37,7 @@
   },
   "devDependencies": {
     "docco": "^0.8.0",
-    "rollup": "^0.62.0",
+    "rollup": "^0.66.2",
     "rollup-plugin-buble": "^0.19.2",
     "tape": "^4.9.1",
     "uglify-js": "^3.4.4"

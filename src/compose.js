@@ -3,13 +3,15 @@ import {default as gup, empty, identity} from './gup';
 // Introduction
 // ============
 // 
-// One of the key ideas of d3-gup is that GUP factories can be composed, whereby
-// the functions of each phase are composed together to form a single GUP
-// factory that can then be bound to data and called against a selection.
+// One of the key ideas of d3-gup is that [GUP factories][gup] can be composed,
+// whereby the functions of each phase are composed together to form a single
+// GUP factory that can then be bound to data and called against a selection.
 // Not only do we compose the phase functions together but we also merge the
 // remaining properties of the GUP factories in the hope that they don't
 // conflict with each other and the resulting GUP factory can be used as if it
 // was any one of its component GUP factories.
+//
+// [gup]: gup.html "gup.js"
 
 // These properties are not to be touched during the merge.
 const nonEnumerableProps = /^(valueOf|isPrototypeOf|to(Locale)?String|propertyIsEnumerable|hasOwnProperty|pre|exit|enter|post|update|select)$/;
