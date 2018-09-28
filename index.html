@@ -158,7 +158,7 @@
             title="Mike Bostock's Blocks">Mike Bostock's</a>
           General Update Pattern examples.  They are presented here so that you
           may compare how d3-gup relates to the conventional approach.</p>
-          <p>The globals to the right are used for each example.</p>
+          <p>The global helpers to the right are used for each example.</p>
         </div>
 
         <div class="content">
@@ -559,6 +559,127 @@ function randomSample(data) {
       .attr("y", 60)
       .style("fill-opacity", 1e-6)
       .remove())
+};</code></pre>
+          </div>
+        </div>
+      </li>
+
+      <li>
+        <div class="annotation">
+          <div class="pilwrap">
+            <a class="pilcrow" href="#example-4">&#182;</a>
+          </div>
+          <h2 id="composition">Composition</h2>
+          <p>Composition allows us to separate concerns into individuals modules
+          and then combined them in different ways.  Creating small modules
+          promotes greater reuse of software components.</p>
+        </div>
+      </li>
+
+      <li class="example">
+        <div><span>Example 4</span></div>
+        <div class="annotation">
+          <div class="pilwrap">
+            <a class="pilcrow" href="#example-4">&#182;</a>
+          </div>
+          <p>In this example we reproduce the previous example by reusing the
+          GUP created in the second example.</p>
+          <p>The only substantial difference is in the construction of the
+          GUP.</p>
+        </div>
+        <div class="content">
+          <svg id="example-4"></svg>
+          <div class='highlight'>
+            <pre><code class="javascript"
+>examples[3] = {
+  tick() {
+    examples[3].root.call(examples[3].gup(randomSample(alphabet), d => d));
+  },
+  timer: d3.interval(() => examples[3].tick(), 1500),
+
+  root: d3.select("#example-4")
+    .attr("width", 450)
+    .attr("height", 100)
+    .append("g")
+    .attr("transform", "translate(16 50)")
+    .transition()
+      .duration(750),</code></pre>
+          </div>
+        </div>
+      </li>
+
+      <li>
+        <div class="annotation">
+          <div class="pilwrap">
+            <a class="pilcrow" href="#example-4">&#182;</a>
+          </div>
+          <p>Two or more GUPs can be composed together with a call to
+          <code>gupCompose</code>.</p>
+        </div>
+        <div class="content">
+          <div class='highlight'>
+            <pre><code class="javascript"
+>  gup: d3.gupCompose(</code></pre>
+          </div>
+        </div>
+      </li>
+
+      <li>
+        <div class="annotation">
+          <div class="pilwrap">
+            <a class="pilcrow" href="#example-4">&#182;</a>
+          </div>
+          <p>All the additional logic is contained in its own GUP.</p>
+          <p>The rightmost GUP will be the innermost call and hence the first to
+          be executed.  This is particularly important for the enter phase where
+          the element must be created before anything else.</p>
+        </div>
+        <div class="content">
+          <div class='highlight'>
+            <pre><code class="javascript"
+>    d3.gup()
+      .enter($ => $
+        .attr("y", -60)
+        .attr("x", (d, i) => i * 16)
+        .style("fill-opacity", 1e-6))
+      .post($ => $
+        .attr("y", 0)
+        .style("fill-opacity", 1))</code></pre>
+          </div>
+        </div>
+      </li>
+
+      <li>
+        <div class="annotation">
+          <div class="pilwrap">
+            <a class="pilcrow" href="#example-4">&#182;</a>
+          </div>
+          <p>The <code>remove</code> call can occur at anytime since it is
+          deferred until the transition completes.</p>
+        </div>
+        <div class="content">
+          <div class='highlight'>
+            <pre><code class="javascript"
+>      .exit($ => $
+        .attr("class", "exit")
+        .attr("y", 60)
+        .style("fill-opacity", 1e-6)),</code></pre>
+          </div>
+        </div>
+      </li>
+
+      <li>
+        <div class="annotation">
+          <div class="pilwrap">
+            <a class="pilcrow" href="#example-4">&#182;</a>
+          </div>
+          <p>The original GUP is passed untouched.</p>
+        </div>
+        <div class="content">
+          <div class='highlight'>
+            <pre><code class="javascript"
+>    examples[1].gup
+  )
 };</code></pre>
           </div>
         </div>

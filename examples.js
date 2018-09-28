@@ -1,8 +1,11 @@
+// Canonical
+// ---------
+
 // The following examples are reproductions of [Mike Bostock's][mike] General
 // Update Pattern examples. They are presented here so that you may compare how
 // d3-gup relates to the conventional approach.
 //
-// The globals to the right are used for each example.
+// The following global helpers are used for each example.
 //
 // [mike]: https://bl.ocks.org/mbostock "Mike Bostock's Blocks"
 var examples = [];
@@ -155,3 +158,53 @@ examples[2] = {
       .remove())
 };
 
+// Composition
+// -----------
+//
+// Composition allows us to separate concerns into individuals modules and then
+// combined them in different ways.  Creating small modules promotes greater
+// reuse of software components.
+//
+// In this example we reproduce the previous example by reusing the GUP created
+// in the second example.
+//
+// The only substantial difference is in the construction of the GUP.
+examples[3] = {
+  tick() {
+    examples[3].root.call(examples[3].gup(randomSample(alphabet), d => d));
+  },
+  timer: d3.interval(() => examples[3].tick(), 1500),
+
+  root: d3.select("#example-4")
+    .attr("width", 450)
+    .attr("height", 100)
+    .append("g")
+    .attr("transform", "translate(16 50)")
+    .transition()
+      .duration(750),
+
+  // Two or more GUPs can be composed together with a call to `gupCompose`.
+  gup: d3.gupCompose(
+    // All the additional logic is contained in its own GUP.
+    //
+    // The rightmost GUP will be the innermost call and hence the first to be
+    // executed.  This is particularly important for the enter phase where the
+    // element must be created before anything else.
+    d3.gup()
+      .enter($ => $
+        .attr("y", -60)
+        .attr("x", (d, i) => i * 16)
+        .style("fill-opacity", 1e-6))
+      .post($ => $
+        .attr("y", 0)
+        .style("fill-opacity", 1))
+      // The `remove` call can occur at anytime since it is deferred until the
+      // transition completes.
+      .exit($ => $
+        .attr("class", "exit")
+        .attr("y", 60)
+        .style("fill-opacity", 1e-6)),
+    // The original GUP is passed untouched.
+    examples[1].gup
+  )
+};
